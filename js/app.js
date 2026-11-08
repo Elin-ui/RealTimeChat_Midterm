@@ -191,10 +191,7 @@ function connectWebSocket() {
     updateConnectionStatus("reconnecting");
 
     // 4. TẠO WebSocket trước khi gán các sự kiện
-    const ws = new WebSocket(
-        `ws://${window.location.hostname}:8080/chat`
-    );
-
+    const ws = new WebSocket("ws://127.0.0.1:8080/chat");
     websocket = ws;
 
     // 5. Kết nối thành công
@@ -292,7 +289,7 @@ function connectWebSocket() {
 
             // Hiển thị người đang nhập
             case "typing":
-                console.log("Typing:", data);
+                showTypingIndicator(data.username, data.is_typing);
                 break;
 
             // Cập nhật danh sách người online
@@ -374,6 +371,19 @@ function connectWebSocket() {
     };
 }
 
+function showTypingIndicator(username, isTyping) {
+    const indicator = $("#typingIndicator");
+
+    if (!indicator) return;
+
+    if (isTyping) {
+        indicator.textContent = `${username} đang soạn tin nhắn...`;
+        indicator.classList.add("show");
+    } else {
+        indicator.textContent = "";
+        indicator.classList.remove("show");
+    }
+}
 
 function sendWebSocket(data) {
     if (

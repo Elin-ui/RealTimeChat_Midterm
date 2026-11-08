@@ -317,3 +317,17 @@ input:focus { border-color: var(--teal); box-shadow: 0 0 0 4px rgba(21,154,131,.
         padding: 10px 12px 5px;
     }
 }
+
+.typing-indicator {
+    min-height: 24px;
+    padding: 4px 16px;
+    font-size: 13px;
+    color: #777;
+    font-style: italic;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.typing-indicator.show {
+    opacity: 1;
+}

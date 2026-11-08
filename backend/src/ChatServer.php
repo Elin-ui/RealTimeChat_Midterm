@@ -187,8 +187,41 @@ class ChatServer implements MessageComponentInterface
                     }
                 }
                 break;
+                case 'typing':
+                    $this->broadcastTyping($from, true);
+                    break;
+
+                case 'stop_typing':
+                    $this->broadcastTyping($from, false);
+                    break;
             default:
                 $this->sendError($from, 'Unknown event type');
+        }
+    }
+
+    private function broadcastTyping(
+        ConnectionInterface $from,
+        bool $isTyping
+    ): void {
+        $clientInfo = $this->clients[$from];
+
+        $roomId = $clientInfo['room_id'] ?? null;
+        $username = $clientInfo['username'] ?? 'Someone';
+
+        // Chỉ gửi cho những người cùng phòng
+        foreach ($this->clients as $client) {
+            $info = $this->clients[$client];
+
+            if (
+                $client !== $from &&
+                ($info['room_id'] ?? null) === $roomId
+            ) {
+                $client->send(json_encode([
+                    'type' => 'typing',
+                    'username' => $username,
+                    'is_typing' => $isTyping
+                ], JSON_UNESCAPED_UNICODE));
+            }
         }
     }
 
